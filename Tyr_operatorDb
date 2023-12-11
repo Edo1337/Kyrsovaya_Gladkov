@@ -1,0 +1,129 @@
+CREATE TABLE tyr_operator
+(
+    operator_uid integer NOT NULL IDENTITY(1,1) PRIMARY KEY,
+    operator_name text NOT NULL,
+	operator_number bigint NOT NULL,
+	operator_email text NOT NULL,
+    operator_country text NOT NULL
+);
+
+CREATE TABLE tyr
+(
+    tyr_id integer NOT NULL IDENTITY(1,1) PRIMARY KEY,
+    tyr_price integer NOT NULL,
+	dlitelnost integer NOT NULL,
+	vid_transporta text NOT NULL,
+    locatsiya text NOT NULL,
+	rating_tyra real NOT NULL,
+	fk_operator_uid integer REFERENCES tyr_operator (operator_uid) NOT NULL
+);
+
+CREATE TABLE tyristicheskoe_agenstvo
+(
+	agenstvo_id integer NOT NULL IDENTITY(1,1) PRIMARY KEY,
+	agenstvo_number bigint NOT NULL,
+	agenstvo_email text NOT NULL,
+	agenstvo_name text NOT NULL,
+	agenstvo_country text NOT NULL
+);
+
+CREATE TABLE tyr_tyristicheskoe_agenstvo -- Создаем таблицу для отношения многие ко многим (Тур - туристическое агенство)
+(
+	tyr_id integer REFERENCES tyr(tyr_id),
+	agenstvo_id integer REFERENCES tyristicheskoe_agenstvo(agenstvo_id),
+	CONSTRAINT tyr_tyristicheskoe_agenstvo_pkey PRIMARY KEY (tyr_id, agenstvo_id)
+);
+
+CREATE TABLE client
+(
+	client_id integer NOT NULL IDENTITY(1,1) PRIMARY KEY,
+	passport bigint NOT NULL,
+	client_number bigint NOT NULL,
+	client_name text NOT NULL,
+	client_patronymic text NOT NULL,
+	client_surname text NOT NULL
+);
+
+CREATE TABLE dogovor 
+(
+	dogovor_id integer NOT NULL IDENTITY(1,1) PRIMARY KEY,
+	dogovor_name text NOT NULL,
+	data_nachala date NOT NULL,
+	data_konca date NOT NULL,
+	price_of_tyr integer NOT NULL,
+	fk_agenstvo_id integer REFERENCES tyristicheskoe_agenstvo (agenstvo_id) NOT NULL,
+	fk_client_id integer REFERENCES client (client_id) NOT NULL
+)
+
+INSERT INTO tyr_operator
+VALUES
+('Апрель','79384340320','aprel@gmail.com','Russia'),
+('Мила-Тур','79384353467','mila_tyr@gmail.com','Russia'),
+('Авиа+','79373432526','avia_plus@gmail.com','Russia'),
+('Bon Voyage','78004232674','bon_voyage@gmail.com','Russia');
+
+INSERT INTO tyr
+VALUES
+('108990', '6', 'Самолет', 'Тайланд, Apk Resort & Spa 3', '3.2', 1),
+('103200', '6', 'Самолет', 'Тайланд, Red Planet Patong (Ex.Tune Hotel Patong) 3', '3.9', 1),
+('124500', '6', 'Самолет', 'Тайланд, Azure Phuket (Ex. Sunshine Patong) 3', '3.6', 1),
+('142200', '10', 'Самолет', 'Тайланд, Ibis Phuket Kata 3', '4.6', 2),
+('164000', '10', 'Самолет', 'Тайланд, Bauman Residence 4', '4.3', 2),
+('183400', '10', 'Самолет', 'Тайланд, Phuket Island View 3', '4.6', 3),
+('202200', '12', 'Самолет', 'Тайланд, Ibis Phuket Kata 3', '4.6', 4),
+('80990', '7', 'Самолет', 'Турция, First Class Hotel 2', '3.6', 4),
+('93200', '7', 'Самолет', 'Турция, Lake & River Side Hotel & Spa 2', '3.9', 4),
+('100500', '7', 'Самолет', 'Турция, Limak Limra Hotel & Resort 2', '3.7', 3),
+('111200', '10', 'Самолет', 'Турция, Belkon Hotel 3', '4.5', 3),
+('164500', '10', 'Самолет', 'Турция, Club Hotel Sera 5', '4.3', 2),
+('183900', '15', 'Самолет', 'Турция, Akka Alinda Hotel 2', '4.7', 2),
+('202200', '12', 'Самолет', 'Турция, King Hotel 5', '4.1', 1),
+('90990', '7', 'Автобус', 'Казахстан, Rixos Water World Aktau 5', '4.2', 2),
+('63200', '7', 'Автобус', 'Казахстан, Shymbulak Resort Hotel 3', '3.9', 3),
+('100500', '7', 'Автобус', 'Казахстан, Rush (Раш) 4', '3.7', 4),
+('111200', '7', 'Самолет', 'Казахстан, Rush (Раш) 4', '3.3', 4),
+('145000', '10', 'Автобус', 'Казахстан, Kazakhstan 4', '4.4', 2),
+('90900', '10', 'Автобус', 'Казахстан, Doubletree By Hilton Almaty 5', '4.7', 2),
+('202200', '12', 'Автобус', 'Казахстан, Rixos Almaty 5', '4.4', 3)
+
+INSERT INTO tyristicheskoe_agenstvo
+VALUES
+('79354326731', 'funandsun@gmail.com', 'FUN&SUN', 'Russia'),
+('79320043421', 'biblio_globus@gmail.com', 'Библио-Глобус', 'Russia'),
+('78003442536', 'alean@gmail.com', 'Алеан', 'Russia'),
+('78003124366', 'sunmar@gmail.com', 'Санмар', 'Russia'),
+('79283125353', 'pegas@gmail.com', 'Pegas', 'Belarus')
+
+INSERT INTO tyr_tyristicheskoe_agenstvo
+VALUES
+(1,1),(2,1),(3,1),(5,1),(7,1),(10,1),(11,1),(12,1),(14,1),
+(1,2),(2,2),(4,2),(6,2),(8,2),(9,2),(13,2),
+(15,3),(16,3),(17,3),(18,3),(19,3),(20,3),(21,3),
+(3,4),(4,4),(5,4),(7,4),(8,4),(11,4),(12,4),(13,4),(14,4),
+(8,5),(9,5),(10,5),(11,5),(12,5),(13,5),(14,5)
+
+INSERT INTO client
+VALUES
+('0311945231', '79384331232', 'Иван', 'Владимирович', 'Цветков'),
+('0311944155', '79384456211', 'Сергей', 'Владимирович', 'Рамков'),
+('0300954656', '79285276214', 'Артем', 'Иванович', 'Решетков'),
+('0308943421', '79784235662', 'Владимир', 'Владимирович', 'Путин'),
+('0301948175', '79384231256', 'Евгений', 'Александрович', 'Пригожин'),
+('0304944112', '79234985313', 'Владимир', 'Евгениевич', 'Альбертов'),
+('0305359152', '79231564134', 'Алексей', 'Сидорович', 'Купятов'),
+('0303941231', '79383156724', 'Альберт', 'Александрович', 'Кабуу'),
+('0301931231', '79384331232', 'Иван', 'Петрович', 'Агаджанян'),
+('0312961131', '79431237137', 'Анатолий', 'Владимирович', 'Вассерман')
+
+INSERT INTO dogovor
+VALUES
+('Договор об оплате тура №1', '01.01.2023', '07.01.2023', '108990','1', '1'),
+('Договор об оплате тура №2', '01.01.2023', '07.01.2023', '124500','1', '2'),
+('Договор об оплате тура №3', '01.01.2023', '11.01.2023', '142200','2', '3'),
+('Договор об оплате тура №4', '03.01.2023', '13.01.2023', '183400','3', '4'),
+('Договор об оплате тура №5', '01.01.2023', '16.01.2023', '183900','2', '5'),
+('Договор об оплате тура №6', '01.01.2023', '08.01.2023', '100500','4', '6'),
+('Договор об оплате тура №7', '05.01.2023', '12.01.2023', '111200','4', '7'),
+('Договор об оплате тура №8', '06.01.2023', '16.01.2023', '90900','2', '8'),
+('Договор об оплате тура №9', '08.01.2023', '14.01.2023', '103200','1', '9'),
+('Договор об оплате тура №10', '11.01.2023', '18.01.2023', '111200','4', '10')
